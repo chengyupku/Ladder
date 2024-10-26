@@ -1,0 +1,1216 @@
+[
+  {
+    "idx": 0,
+    "name": "less_add_where_take_0",
+    "inputs": [
+      {
+        "name": "PlaceHolder ",
+        "shapes": [
+          [
+            1,
+            1
+          ]
+        ],
+        "dtypes": [
+          "int64"
+        ]
+      },
+      {
+        "name": "PlaceHolder ",
+        "shapes": [
+          [
+            128256,
+            4096
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "name": "cast_multiply_1",
+        "shapes": [
+          [
+            1,
+            1,
+            4096
+          ],
+          [
+            1,
+            1,
+            4096
+          ]
+        ],
+        "dtypes": [
+          "float32",
+          "float32"
+        ]
+      },
+      {
+        "name": "reshape_add_24",
+        "shapes": [
+          [
+            1,
+            1,
+            4096
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ]
+  },
+  {
+    "idx": 1,
+    "name": "cast_multiply_1",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "mean_add_sqrt_divide_2",
+        "shapes": [
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "dtypes": [
+          "float32"
+        ]
+      },
+      {
+        "name": "multiply_cast_multiply_3",
+        "shapes": [
+          [
+            1,
+            1,
+            4096
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ]
+  },
+  {
+    "idx": 2,
+    "name": "mean_add_sqrt_divide_2",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "multiply_cast_multiply_3",
+        "shapes": [
+          [
+            1,
+            1,
+            4096
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ]
+  },
+  {
+    "idx": 3,
+    "name": "multiply_cast_multiply_3",
+    "inputs": [
+      {
+        "name": "PlaceHolder ",
+        "shapes": [
+          [
+            4096
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "name": "reshape_4",
+        "shapes": [
+          [
+            1,
+            4096
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ]
+  },
+  {
+    "idx": 4,
+    "name": "reshape_4",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "nn_dense_5",
+        "shapes": [
+          [
+            1,
+            4096
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      },
+      {
+        "name": "nn_dense_8",
+        "shapes": [
+          [
+            1,
+            1024
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      },
+      {
+        "name": "nn_dense_18",
+        "shapes": [
+          [
+            1,
+            1024
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ]
+  },
+  {
+    "idx": 5,
+    "name": "nn_dense_5",
+    "inputs": [
+      {
+        "name": "PlaceHolder ",
+        "shapes": [
+          [
+            4096,
+            4096
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "name": "reshape_reshape_transpose_6",
+        "shapes": [
+          [
+            1,
+            32,
+            1,
+            128
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ]
+  },
+  {
+    "idx": 6,
+    "name": "reshape_reshape_transpose_6",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "multiply_strided_slice_negative_strided_slice_concatenate_multiply_add_multiply_reshape_7",
+        "shapes": [
+          [
+            32,
+            1,
+            128
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ]
+  },
+  {
+    "idx": 7,
+    "name": "multiply_strided_slice_negative_strided_slice_concatenate_multiply_add_multiply_reshape_7",
+    "inputs": [
+      {
+        "name": "PlaceHolder ",
+        "shapes": [
+          [
+            1,
+            1,
+            1,
+            128
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      },
+      {
+        "name": "PlaceHolder ",
+        "shapes": [
+          [
+            1,
+            1,
+            1,
+            128
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      },
+      {
+        "name": "PlaceHolder ",
+        "shapes": [
+          [
+            1
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "name": "nn_batch_matmul_12",
+        "shapes": [
+          [
+            32,
+            1,
+            8193
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ]
+  },
+  {
+    "idx": 8,
+    "name": "nn_dense_8",
+    "inputs": [
+      {
+        "name": "PlaceHolder ",
+        "shapes": [
+          [
+            1024,
+            4096
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "name": "reshape_reshape_transpose_9",
+        "shapes": [
+          [
+            1,
+            8,
+            1,
+            128
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ]
+  },
+  {
+    "idx": 9,
+    "name": "reshape_reshape_transpose_9",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "multiply_strided_slice_negative_strided_slice_concatenate_multiply_add_concatenate_10",
+        "shapes": [
+          [
+            1,
+            8,
+            8193,
+            128
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ]
+  },
+  {
+    "idx": 10,
+    "name": "multiply_strided_slice_negative_strided_slice_concatenate_multiply_add_concatenate_10",
+    "inputs": [
+      {
+        "name": "PlaceHolder ",
+        "shapes": [
+          [
+            1,
+            1,
+            1,
+            128
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      },
+      {
+        "name": "PlaceHolder ",
+        "shapes": [
+          [
+            1,
+            1,
+            1,
+            128
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      },
+      {
+        "name": "PlaceHolder ",
+        "shapes": [
+          [
+            1,
+            8,
+            8192,
+            128
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "name": "expand_dims_broadcast_to_reshape_transpose_multiply_reshape_transpose_11",
+        "shapes": [
+          [
+            32,
+            8193,
+            128
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      },
+      {
+        "name": "Output ",
+        "shapes": [
+          [
+            1,
+            8,
+            8193,
+            128
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ]
+  },
+  {
+    "idx": 11,
+    "name": "expand_dims_broadcast_to_reshape_transpose_multiply_reshape_transpose_11",
+    "inputs": [
+      {
+        "name": "PlaceHolder ",
+        "shapes": [
+          [
+            1
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "name": "nn_batch_matmul_12",
+        "shapes": [
+          [
+            32,
+            1,
+            8193
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ]
+  },
+  {
+    "idx": 12,
+    "name": "nn_batch_matmul_12",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "reshape_add_13",
+        "shapes": [
+          [
+            1,
+            32,
+            1,
+            8193
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ]
+  },
+  {
+    "idx": 13,
+    "name": "reshape_add_13",
+    "inputs": [
+      {
+        "name": "PlaceHolder ",
+        "shapes": [
+          [
+            1,
+            1,
+            1,
+            8193
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "name": "max_14",
+        "shapes": [
+          [
+            1,
+            32,
+            1,
+            1
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      },
+      {
+        "name": "subtract_exp_15",
+        "shapes": [
+          [
+            1,
+            32,
+            1,
+            8193
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ]
+  },
+  {
+    "idx": 14,
+    "name": "max_14",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "subtract_exp_15",
+        "shapes": [
+          [
+            1,
+            32,
+            1,
+            8193
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ]
+  },
+  {
+    "idx": 15,
+    "name": "subtract_exp_15",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "sum_16",
+        "shapes": [
+          [
+            1,
+            32,
+            1,
+            1
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      },
+      {
+        "name": "divide_reshape_17",
+        "shapes": [
+          [
+            32,
+            1,
+            8193
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ]
+  },
+  {
+    "idx": 16,
+    "name": "sum_16",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "divide_reshape_17",
+        "shapes": [
+          [
+            32,
+            1,
+            8193
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ]
+  },
+  {
+    "idx": 17,
+    "name": "divide_reshape_17",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "nn_batch_matmul_21",
+        "shapes": [
+          [
+            32,
+            1,
+            128
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ]
+  },
+  {
+    "idx": 18,
+    "name": "nn_dense_18",
+    "inputs": [
+      {
+        "name": "PlaceHolder ",
+        "shapes": [
+          [
+            1024,
+            4096
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "name": "reshape_reshape_transpose_concatenate_19",
+        "shapes": [
+          [
+            1,
+            8,
+            8193,
+            128
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ]
+  },
+  {
+    "idx": 19,
+    "name": "reshape_reshape_transpose_concatenate_19",
+    "inputs": [
+      {
+        "name": "PlaceHolder ",
+        "shapes": [
+          [
+            1,
+            8,
+            8192,
+            128
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "name": "expand_dims_broadcast_to_reshape_reshape_transpose_20",
+        "shapes": [
+          [
+            32,
+            128,
+            8193
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      },
+      {
+        "name": "Output ",
+        "shapes": [
+          [
+            1,
+            8,
+            8193,
+            128
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ]
+  },
+  {
+    "idx": 20,
+    "name": "expand_dims_broadcast_to_reshape_reshape_transpose_20",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "nn_batch_matmul_21",
+        "shapes": [
+          [
+            32,
+            1,
+            128
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ]
+  },
+  {
+    "idx": 21,
+    "name": "nn_batch_matmul_21",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "reshape_transpose_reshape_reshape_22",
+        "shapes": [
+          [
+            1,
+            4096
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ]
+  },
+  {
+    "idx": 22,
+    "name": "reshape_transpose_reshape_reshape_22",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "nn_dense_23",
+        "shapes": [
+          [
+            1,
+            4096
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ]
+  },
+  {
+    "idx": 23,
+    "name": "nn_dense_23",
+    "inputs": [
+      {
+        "name": "PlaceHolder ",
+        "shapes": [
+          [
+            4096,
+            4096
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "name": "reshape_add_24",
+        "shapes": [
+          [
+            1,
+            1,
+            4096
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ]
+  },
+  {
+    "idx": 24,
+    "name": "reshape_add_24",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "cast_multiply_25",
+        "shapes": [
+          [
+            1,
+            1,
+            4096
+          ],
+          [
+            1,
+            1,
+            4096
+          ]
+        ],
+        "dtypes": [
+          "float32",
+          "float32"
+        ]
+      },
+      {
+        "name": "reshape_add_cast_multiply_34",
+        "shapes": [
+          [
+            1,
+            1,
+            4096
+          ],
+          [
+            1,
+            1,
+            4096
+          ]
+        ],
+        "dtypes": [
+          "float32",
+          "float32"
+        ]
+      }
+    ]
+  },
+  {
+    "idx": 25,
+    "name": "cast_multiply_25",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "mean_add_sqrt_divide_26",
+        "shapes": [
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "dtypes": [
+          "float32"
+        ]
+      },
+      {
+        "name": "multiply_cast_multiply_27",
+        "shapes": [
+          [
+            1,
+            1,
+            4096
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ]
+  },
+  {
+    "idx": 26,
+    "name": "mean_add_sqrt_divide_26",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "multiply_cast_multiply_27",
+        "shapes": [
+          [
+            1,
+            1,
+            4096
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ]
+  },
+  {
+    "idx": 27,
+    "name": "multiply_cast_multiply_27",
+    "inputs": [
+      {
+        "name": "PlaceHolder ",
+        "shapes": [
+          [
+            4096
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "name": "reshape_28",
+        "shapes": [
+          [
+            1,
+            4096
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ]
+  },
+  {
+    "idx": 28,
+    "name": "reshape_28",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "nn_dense_29",
+        "shapes": [
+          [
+            1,
+            14336
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      },
+      {
+        "name": "nn_dense_31",
+        "shapes": [
+          [
+            1,
+            14336
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ]
+  },
+  {
+    "idx": 29,
+    "name": "nn_dense_29",
+    "inputs": [
+      {
+        "name": "PlaceHolder ",
+        "shapes": [
+          [
+            14336,
+            4096
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "name": "reshape_30",
+        "shapes": [
+          [
+            1,
+            1,
+            14336
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ]
+  },
+  {
+    "idx": 30,
+    "name": "reshape_30",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "sigmoid_multiply_reshape_multiply_reshape_32",
+        "shapes": [
+          [
+            1,
+            14336
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ]
+  },
+  {
+    "idx": 31,
+    "name": "nn_dense_31",
+    "inputs": [
+      {
+        "name": "PlaceHolder ",
+        "shapes": [
+          [
+            14336,
+            4096
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "name": "sigmoid_multiply_reshape_multiply_reshape_32",
+        "shapes": [
+          [
+            1,
+            14336
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ]
+  },
+  {
+    "idx": 32,
+    "name": "sigmoid_multiply_reshape_multiply_reshape_32",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "nn_dense_33",
+        "shapes": [
+          [
+            1,
+            4096
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ]
+  },
+  {
+    "idx": 33,
+    "name": "nn_dense_33",
+    "inputs": [
+      {
+        "name": "PlaceHolder ",
+        "shapes": [
+          [
+            4096,
+            14336
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "name": "reshape_add_cast_multiply_34",
+        "shapes": [
+          [
+            1,
+            1,
+            4096
+          ],
+          [
+            1,
+            1,
+            4096
+          ]
+        ],
+        "dtypes": [
+          "float32",
+          "float32"
+        ]
+      }
+    ]
+  },
+  {
+    "idx": 34,
+    "name": "reshape_add_cast_multiply_34",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "mean_add_sqrt_divide_35",
+        "shapes": [
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "dtypes": [
+          "float32"
+        ]
+      },
+      {
+        "name": "multiply_cast_multiply_36",
+        "shapes": [
+          [
+            1,
+            1,
+            4096
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ]
+  },
+  {
+    "idx": 35,
+    "name": "mean_add_sqrt_divide_35",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "multiply_cast_multiply_36",
+        "shapes": [
+          [
+            1,
+            1,
+            4096
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ]
+  },
+  {
+    "idx": 36,
+    "name": "multiply_cast_multiply_36",
+    "inputs": [
+      {
+        "name": "PlaceHolder ",
+        "shapes": [
+          [
+            4096
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Output ",
+        "shapes": [
+          [
+            1,
+            1,
+            4096
+          ]
+        ],
+        "dtypes": [
+          "float16"
+        ]
+      }
+    ]
+  },
+  {
+    "idx": 37,
+    "name": "Output ",
+    "inputs": [],
+    "outputs": []
+  },
+  {
+    "idx": 38,
+    "name": "Output ",
+    "inputs": [],
+    "outputs": []
+  },
+  {
+    "idx": 39,
+    "name": "Output ",
+    "inputs": [],
+    "outputs": []
+  }
+]
