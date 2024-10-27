@@ -60,16 +60,17 @@ def call_cuda_compile(output, objects, options=None, cc="nvcc"):
             temp_objs.append(obj)
             objects_to_link.append(obj)
             commands = [cc, "-c", object, "-o", obj, "--compiler-options", "-fPIC"] + options
-            print(commands)
-            os.system(' '.join(commands))
-            # proc = subprocess.Popen(commands, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-            # procs.append(proc)
+            proc = subprocess.Popen(commands, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            procs.append(proc)
+    for proc in procs:
+        stdout, stderr = proc.communicate()
+    # Using proc.wait() may cause blocking
     # for proc in procs:
     #     proc.wait()
-    # for proc in procs:
-    #     if proc.returncode != 0:
-    #         msg = proc.stdout.read().decode('utf-8')
-    #         raise RuntimeError("Compilation error: " + msg)
+    for proc in procs:
+        if proc.returncode != 0:
+            msg = proc.stdout.read().decode('utf-8')
+            raise RuntimeError("Compilation error: " + msg)
     subprocess.run(["nvcc", "--shared", *objects_to_link, "-o", output], check=True,
                    stdout=subprocess.PIPE,  # Capture the stdout
                    stderr=subprocess.PIPE,  # Capture the stderr
