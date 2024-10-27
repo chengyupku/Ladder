@@ -194,3 +194,13 @@ if __name__ == "__main__":
 
     path = "/home/aiscuser/cy/Ladder/artifact/models/llama3_8b/llama3_8b_layer1_seq1_bs1_kv8192/model.onnx"
     run(path, arch, async_propagate=args.async_propagation, fake_quant=args.fake_quant, quant_config=quant_config, convert_int=args.convert_int)
+    # path = "/home/aiscuser/cy/Ladder/artifact/models/llama3_8b/simple_gemm_test/model.onnx"
+    # run(path, arch, async_propagate=args.async_propagation, fake_quant=args.fake_quant, quant_config=quant_config, convert_int=args.convert_int)
+    # path = "/home/aiscuser/cy/Ladder/artifact/models/llama3_8b/simple_add_test/model.onnx"
+    # run(path, arch, async_propagate=args.async_propagation, fake_quant=args.fake_quant, quant_config=quant_config, convert_int=args.convert_int)
+    # prebuilt_path = "/home/aiscuser/cy/Ladder/artifact/run_ladder/progress/e2e/ladder_llama3_async"
+    # run_from_prebuilt(prebuilt_path, arch)
+    # path = "/home/aiscuser/cy/Ladder/artifact/models/llama3_8b/llama3_8b_single_attention_seq1_bs1_kv8192/model.onnx"
+    # run(path, arch, async_propagate=args.async_propagation, fake_quant=args.fake_quant, quant_config=quant_config, convert_int=args.convert_int)
+    # path = "/home/aiscuser/cy/Ladder/artifact/models/llama3_8b/llama3_8b_layer1_seq1_bs1_kv64/model.onnx"
+    # run(path, arch, async_propagate=args.async_propagation, fake_quant=args.fake_quant, quant_config=quant_config, convert_int=args.convert_int)

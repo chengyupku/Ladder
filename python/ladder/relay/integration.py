@@ -60,14 +60,16 @@ def call_cuda_compile(output, objects, options=None, cc="nvcc"):
             temp_objs.append(obj)
             objects_to_link.append(obj)
             commands = [cc, "-c", object, "-o", obj, "--compiler-options", "-fPIC"] + options
-            proc = subprocess.Popen(commands, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-            procs.append(proc)
-    for proc in procs:
-        proc.wait()
-    for proc in procs:
-        if proc.returncode != 0:
-            msg = proc.stdout.read().decode('utf-8')
-            raise RuntimeError("Compilation error: " + msg)
+            print(commands)
+            os.system(' '.join(commands))
+            # proc = subprocess.Popen(commands, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            # procs.append(proc)
+    # for proc in procs:
+    #     proc.wait()
+    # for proc in procs:
+    #     if proc.returncode != 0:
+    #         msg = proc.stdout.read().decode('utf-8')
+    #         raise RuntimeError("Compilation error: " + msg)
     subprocess.run(["nvcc", "--shared", *objects_to_link, "-o", output], check=True,
                    stdout=subprocess.PIPE,  # Capture the stdout
                    stderr=subprocess.PIPE,  # Capture the stderr
@@ -78,9 +80,13 @@ def call_cuda_compile(output, objects, options=None, cc="nvcc"):
 
 def update_lib(lib, arch, lib_path):
     compute_version = arch.compute_capability
-    cutlass_dir = os.path.expanduser("~/cutlass/include")
+    cutlass_dir = "/home/aiscuser/cy/Ladder/3rdparty/cutlass/include"
+    if compute_version == "90":
+        arch_gencode = "-arch=sm_90a"
+    else:
+        arch_gencode = f"-gencode=arch=compute_{compute_version},code=compute_{compute_version}"
     options = ["-std=c++17", "-O3", "--prec-sqrt=false", "--ftz=true", "--prec-div=false", "--fmad=true",
-               f"-gencode=arch=compute_{compute_version},code=compute_{compute_version}",
+               f"{arch_gencode}",
                f"-I{cutlass_dir}"]
     lib.export_library(lib_path, fcompile=call_cuda_compile, options=options)
     lib = tvm.runtime.load_module(lib_path)

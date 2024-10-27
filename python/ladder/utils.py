@@ -155,6 +155,10 @@ extern "C" int {symbol}({def_args}) {{
             lib_name = src.name.replace(".cu", ".so")
             compute_version = arch.compute_capability
             cutlass_dir = os.path.expanduser("~/cutlass/include")
+            if compute_version == "90":
+                arch_gencode = "-arch=sm_90a"
+            else:
+                arch_gencode = f"-gencode=arch=compute_{compute_version},code=compute_{compute_version}"
             command = [
                 "nvcc",
                 "-std=c++17",
@@ -166,7 +170,7 @@ extern "C" int {symbol}({def_args}) {{
                 "--shared",
                 src.name,
                 "-lcuda",
-                f"-gencode=arch=compute_{compute_version},code=compute_{compute_version}",
+                f"{arch_gencode}",
                 f"-I{cutlass_dir}",
                 "-o",
                 lib_name,

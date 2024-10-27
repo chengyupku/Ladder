@@ -68,3 +68,74 @@ else:
         export_params=True,
         opset_version=14
     )
+
+# # For simple tests
+# from ..model.pytorch.single_attention import SingleAttention
+# model = SingleAttention().half().cuda()
+# model.eval()
+
+# batch_size = 1
+# seq_length_q = 1
+# seq_length_kv = 64
+
+# q_shape = [batch_size, config_llama3_8b.num_attention_heads, seq_length_q, config_llama3_8b.hidden_size // config_llama3_8b.num_attention_heads]
+# kv_shape = [batch_size, config_llama3_8b.num_attention_heads, seq_length_kv, config_llama3_8b.hidden_size // config_llama3_8b.num_attention_heads]
+# q = torch.ones(q_shape, device="cuda", dtype=torch.float16)
+# k = torch.ones(kv_shape, device="cuda", dtype=torch.float16)
+# v = torch.ones(kv_shape, device="cuda", dtype=torch.float16)
+
+# args = (q, k, v, None)
+# output = model(*args)
+
+# # make a directory to save the model -> {llama2_70b_layer1_seq1_bs16/model.onnx}
+# dir_name = f"llama3_8b_single_attention_seq{seq_length_q}_bs{batch_size}_kv{seq_length_kv}"
+# if not os.path.exists(dir_name):
+#     os.makedirs(dir_name)
+
+# # Save model into ONNX
+# torch.onnx.export(
+#     model,
+#     args,
+#     f"{dir_name}/model.onnx",
+#     export_params=True,
+#     opset_version=14
+# )
+
+# from ..model.pytorch.single_attention import SimpleGemm
+# model = SimpleGemm().half().cuda()
+# model.eval()
+# m, n, k = 64, 64, 64
+# A = torch.ones(m, k, device="cuda", dtype=torch.float16)
+# B = torch.ones(k, n, device="cuda", dtype=torch.float16)
+
+# dir_name = f"simple_gemm_test"
+# if not os.path.exists(dir_name):
+#     os.makedirs(dir_name)
+
+# # Save model into ONNX
+# torch.onnx.export(
+#     model,
+#     (A, B),
+#     f"{dir_name}/model.onnx",
+#     export_params=True,
+#     opset_version=14
+# )
+
+# from ..model.pytorch.single_attention import SimpleAdd
+# model = SimpleAdd().half().cuda()
+# model.eval()
+# m, n = 64, 64
+# A = torch.ones(m, n, device="cuda", dtype=torch.float16)
+
+# dir_name = f"simple_add_test"
+# if not os.path.exists(dir_name):
+#     os.makedirs(dir_name)
+
+# # Save model into ONNX
+# torch.onnx.export(
+#     model,
+#     (A),
+#     f"{dir_name}/model.onnx",
+#     export_params=True,
+#     opset_version=14
+# )
