@@ -60,6 +60,9 @@ parser.add_argument("--seq_length_q", type=int, default=1)
 parser.add_argument("--seq_length_kv", type=int, default=8192)
 parser.add_argument("--batch_size", type=int, default=1)
 args = parser.parse_args()
+batch_size = args.batch_size
+seq_length_q = args.seq_length_q
+seq_length_kv = args.seq_length_kv
 if (args.config == '8b'):
     config = config_llama3_8b
 elif (args.config == '70b'):
@@ -72,10 +75,6 @@ model = LlamaModel(config).half().cuda().layers[0]
 model = LlamaWrapper(config, model)
 model.eval()
 print(model)
-
-batch_size = args.batch_size
-seq_length_q = args.seq_length_q
-seq_length_kv = args.seq_length_kv
 
 kv_shape = [
     batch_size, 
@@ -117,28 +116,24 @@ torch.onnx.export(
 # model = SingleAttention().half().cuda()
 # model.eval()
 
-# batch_size = 64
-# seq_length_q = 1
-# seq_length_kv = 8192
-
 # q_shape = [batch_size, config.num_attention_heads, seq_length_q, config.hidden_size // config.num_attention_heads]
 # kv_shape = [batch_size, config.num_attention_heads, seq_length_kv, config.hidden_size // config.num_attention_heads]
 # q = torch.ones(q_shape, device="cuda", dtype=torch.float16)
 # k = torch.ones(kv_shape, device="cuda", dtype=torch.float16)
 # v = torch.ones(kv_shape, device="cuda", dtype=torch.float16)
 
-# args = (q, k, v, None)
-# output = model(*args)
+# input_args = (q, k, v, None)
+# output = model(*input_args)
 
-# # make a directory to save the model -> {llama2_70b_layer1_seq1_bs16/model.onnx}
-# dir_name = f"llama3_8b_single_attention_seq{seq_length_q}_bs{batch_size}_kv{seq_length_kv}"
+# # make a directory to save the model
+# dir_name = f"llama3_{args.config}_layer1_seq{seq_length_q}_bs{batch_size}_kv{seq_length_kv}_single_attn"
 # if not os.path.exists(dir_name):
 #     os.makedirs(dir_name)
 
 # # Save model into ONNX
 # torch.onnx.export(
 #     model,
-#     args,
+#     input_args,
 #     f"{dir_name}/model.onnx",
 #     export_params=True,
 #     opset_version=14
