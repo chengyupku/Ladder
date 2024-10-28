@@ -14,7 +14,7 @@ class SingleAttention(torch.nn.Module):
             value_states,
             attn_mask=causal_mask,
             dropout_p=0.0,
-            is_causal=False,
+            is_causal=True,
         )
         return attn_output
 

@@ -10,8 +10,7 @@ models/*
 !models/model/
 !models/bloom_176b
 !models/llama_70b
-!models/llama3_8b
-!models/llama3_70b
+!models/llama3
 !models/mamba2
 
 Figure4090

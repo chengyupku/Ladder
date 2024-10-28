@@ -2,8 +2,10 @@ import torch
 from transformers import LlamaModel, LlamaConfig
 import os
 import argparse
+from typing import List, Optional, Tuple, Union
+from wrapper import LlamaWrapper
+from transformers.models.llama.modeling_llama import LlamaRotaryEmbedding
 
-export_single_layer = False
 config_llama3_8b = LlamaConfig(
   attention_bias=False,
   attention_dropout=0.0,
@@ -28,58 +30,99 @@ config_llama3_8b = LlamaConfig(
   vocab_size=128256
 )
 
-model = LlamaModel(config_llama3_8b).half().cuda()
-print(model.dtype)
-if export_single_layer:
-    model = model.layers[0]
-model.eval()
-print(model)
+config_llama3_70b = LlamaConfig(
+  attention_bias=False,
+  attention_dropout=0.0,
+  bos_token_id=128000,
+  eos_token_id=128001,
+  hidden_act="silu",
+  hidden_size=8192,
+  initializer_range=0.02,
+  intermediate_size=28672,
+  max_position_embeddings=8192,
+  mlp_bias=False,
+  num_attention_heads=64,
+  num_hidden_layers=1,
+  num_key_value_heads=8,
+  pad_token_id=128255,
+  pretraining_tp=1,
+  rms_norm_eps=1e-05,
+  rope_scaling=None,
+  rope_theta=500000.0,
+  tie_word_embeddings=False,
+  use_cache=True,
+  vocab_size=128256
+)
+
 parser = argparse.ArgumentParser()
+parser.add_argument('--config', type=str, default='8b')
 parser.add_argument("--seq_length_q", type=int, default=1)
 parser.add_argument("--seq_length_kv", type=int, default=8192)
 parser.add_argument("--batch_size", type=int, default=1)
 args = parser.parse_args()
+if (args.config == '8b'):
+    config = config_llama3_8b
+elif (args.config == '70b'):
+    config = config_llama3_70b
+else:
+    raise ValueError("Invalid config")
+
+model = LlamaModel(config).half().cuda().layers[0]
+# We use LlamaWrapper to wrap the model so that it can accept the same inputs as the LlamaModel
+model = LlamaWrapper(config, model)
+model.eval()
+print(model)
 
 batch_size = args.batch_size
 seq_length_q = args.seq_length_q
 seq_length_kv = args.seq_length_kv
 
-if export_single_layer:
-    input_ids = torch.ones(batch_size, seq_length_q, config_llama3_8b.hidden_size, device="cuda", dtype=torch.float16)
-else:
-    input_ids = torch.ones(batch_size, seq_length_q, device="cuda", dtype=torch.int64)
-    kv_shape = [batch_size, config_llama3_8b.num_key_value_heads, seq_length_kv, config_llama3_8b.hidden_size // config_llama3_8b.num_attention_heads]
-    k = torch.ones(kv_shape, device="cuda", dtype=torch.float16)
-    v = torch.ones(kv_shape, device="cuda", dtype=torch.float16)
-    past_key_values = [[k, v]]
-    args = (input_ids, None, None, past_key_values, None, True)
-    # output = model(input_ids, past_key_values=past_key_values, use_cache=True)
+kv_shape = [
+    batch_size, 
+    config.num_key_value_heads, 
+    seq_length_kv - seq_length_q, 
+    config.hidden_size // config.num_attention_heads
+]
 
-    # make a directory to save the model -> {llama2_70b_layer1_seq1_bs16/model.onnx}
-    dir_name = f"llama3_8b_layer1_seq{seq_length_q}_bs{batch_size}_kv{seq_length_kv}"
-    if not os.path.exists(dir_name):
-        os.makedirs(dir_name)
+rotary_emb = LlamaRotaryEmbedding(config=config).half().cuda()
+rotary_emb.eval()
 
-    # Save model into ONNX
-    torch.onnx.export(
-        model,
-        args,
-        f"{dir_name}/model.onnx",
-        export_params=True,
-        opset_version=14
-    )
+inputs_embeds = torch.ones(batch_size, seq_length_q, config.hidden_size, device="cuda", dtype=torch.float16)
+position_ids = torch.arange(seq_length_kv - seq_length_q, seq_length_kv, device="cuda").unsqueeze(0)
+position_embeddings = rotary_emb(inputs_embeds, position_ids)
+
+k = torch.ones(kv_shape, device="cuda", dtype=torch.float16)
+v = torch.ones(kv_shape, device="cuda", dtype=torch.float16)
+past_key_values = [[k, v]]
+
+input_args = (inputs_embeds, position_ids, position_embeddings, None, past_key_values, True)
+output = model(*input_args)
+
+# make a directory to save the model
+dir_name = f"llama3_{args.config}_layer1_seq{seq_length_q}_bs{batch_size}_kv{seq_length_kv}"
+if not os.path.exists(dir_name):
+    os.makedirs(dir_name)
+
+# Save model into ONNX
+torch.onnx.export(
+    model,
+    input_args,
+    f"{dir_name}/model.onnx",
+    export_params=True,
+    opset_version=14
+)
 
 # # For simple tests
-# from ..model.pytorch.single_attention import SingleAttention
+# from single_attention import SingleAttention
 # model = SingleAttention().half().cuda()
 # model.eval()
 
-# batch_size = 1
+# batch_size = 64
 # seq_length_q = 1
-# seq_length_kv = 64
+# seq_length_kv = 8192
 
-# q_shape = [batch_size, config_llama3_8b.num_attention_heads, seq_length_q, config_llama3_8b.hidden_size // config_llama3_8b.num_attention_heads]
-# kv_shape = [batch_size, config_llama3_8b.num_attention_heads, seq_length_kv, config_llama3_8b.hidden_size // config_llama3_8b.num_attention_heads]
+# q_shape = [batch_size, config.num_attention_heads, seq_length_q, config.hidden_size // config.num_attention_heads]
+# kv_shape = [batch_size, config.num_attention_heads, seq_length_kv, config.hidden_size // config.num_attention_heads]
 # q = torch.ones(q_shape, device="cuda", dtype=torch.float16)
 # k = torch.ones(kv_shape, device="cuda", dtype=torch.float16)
 # v = torch.ones(kv_shape, device="cuda", dtype=torch.float16)

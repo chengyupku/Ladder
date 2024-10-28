@@ -13,7 +13,7 @@ import logging
 ladder.schedule.enable_schedule_dump()
 ladder.set_log_level(logging.DEBUG)
 
-model_path = osp.join(osp.dirname(osp.realpath(__file__)), "..", "..", "models")
+model_path = osp.join(osp.dirname(osp.realpath(__file__)), "..", "models")
 
 # get file name and remove the suffix
 fname = os.path.basename(__file__)
@@ -22,7 +22,7 @@ fname = os.path.splitext(fname)[0]
 log_path = "progress/e2e/" + fname
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--prefix', type=str, default='llama2-70b')
+parser.add_argument('--prefix', type=str, default='llama3_8b')
 parser.add_argument('--arch', type=str, default="cuda")
 parser.add_argument('--cublas', action="store_true")
 parser.add_argument('--cudnn', action="store_false")
@@ -30,19 +30,21 @@ parser.add_argument('--nhwc', action="store_false")
 parser.add_argument('--fake_quant', type=int, default=-1)
 parser.add_argument("--fast_decoding", action="store_true", help="Use fast decoding mode.", default=False)
 parser.add_argument('--batch', type=int, default=1)
-parser.add_argument('--seq_len', type=int, default=1)
+parser.add_argument('--seqlen_q', type=int, default=1)
+parser.add_argument('--seqlen_kv', type=int, default=8192)
+parser.add_argument('--single_attn', action="store_true")
+parser.add_argument('--no_attn', action="store_true")
 parser.add_argument('--bits', type=int, default=4)
 parser.add_argument('--convert_int', action="store_true")
 parser.add_argument('--format', type=str, default='int')
 parser.add_argument('--async_propagation', action="store_true", help="Use async propagation and async instructions, which should be only enabled on data center GPUs with async copy instructions.")
 parser.add_argument("--prebuilt_path", type=str, default=None, help="Path to the prebuilt model. If set, the script will run from the prebuilt model.")
+parser.add_argument("--use_prebuilt", action="store_true", help="Use prebuilt model.")
 
 args = parser.parse_args()
 
 def run(prefix, arch, async_propagate, fake_quant, quant_config, convert_int):
     global log_path
-    if async_propagate:
-        log_path += "_async"
     if ".onnx" in prefix:
         onnx_model = onnx.load(prefix)
     else:
@@ -155,8 +157,7 @@ def run_from_prebuilt(prefix, arch):
     module = debug_executor.create(graph_json, loaded_lib, tvm.cuda(0))
     
     print(module.benchmark(tvm.cuda(0), min_repeat_ms=500, end_to_end=False))
-
-    # module.run()
+    module.run()
 
 
 
@@ -167,40 +168,17 @@ if __name__ == "__main__":
             'group_size': -1,
     }
     arch = ladder.arch.__getattribute__(args.arch)()
-    name = args.prefix
-    if args.prefix == "llama2-70b":
-        path = f'{model_path}/llama_70b/llama2_70b_layer1_seq{args.seq_len}_bs{args.batch}/model.onnx'
-    elif args.prefix == "bloom-176b":
-        path = f'{model_path}/bloom_176b/bloom-176b_layer1_seq{args.seq_len}_bs{args.batch}/model.onnx'
+    model_config = f"{args.prefix}_layer1_seq{args.seqlen_q}_bs{args.batch}_kv{args.seqlen_kv}"
+    if args.single_attn:
+        model_config += "_single_attn"
+    elif args.no_attn:
+        model_config += "_no_attn"
+    path = f"{model_path}/llama3/{model_config}/model.onnx"
+    log_path = f"progress/e2e/ladder_{model_config}"
+    # print(f"path: {path}")
+    # print(f"log_path: {log_path}")
+    if args.use_prebuilt:
+        run_from_prebuilt(log_path, arch)
     else:
-        path = args.prefix
-        name = path.split("/")[-1]
-    # path = f'./models/llama_70b/llama2_70b_layer1_seq{args.seq_len}_bs{args.batch}/model.onnx'
-
-    # log_path = "progress/e2e/" + name + "/" + fname
-    # if args.fake_quant > -1:
-    #     log_path += f'_fq_{args.fake_quant}_{quant_config["format"]}_{quant_config["bits"]}_{quant_config["group_size"]}_bs{args.batch}_seq{args.seq_len}_ci_{args.convert_int}'
-    # else:
-    #     log_path += f'_bs{args.batch}_seq{args.seq_len}'
-    # prebuilt_path = args.prebuilt_path
-    # if prebuilt_path:
-    #     print(f"Running from prebuilt model: {prebuilt_path}")
-    #     run_from_prebuilt(prebuilt_path, arch)
-    # else:
-    #     print("Testing model: {}".format(name))
-    #     run(path, arch, async_propagate=args.async_propagation, fake_quant=args.fake_quant, quant_config=quant_config, convert_int=args.convert_int)
-
-    # os.system("rm -rf /tmp/tvmdbg_*")
-
-    path = "/home/aiscuser/cy/Ladder/artifact/models/llama3_8b/llama3_8b_layer1_seq1_bs1_kv8192/model.onnx"
-    run(path, arch, async_propagate=args.async_propagation, fake_quant=args.fake_quant, quant_config=quant_config, convert_int=args.convert_int)
-    # path = "/home/aiscuser/cy/Ladder/artifact/models/llama3_8b/simple_gemm_test/model.onnx"
-    # run(path, arch, async_propagate=args.async_propagation, fake_quant=args.fake_quant, quant_config=quant_config, convert_int=args.convert_int)
-    # path = "/home/aiscuser/cy/Ladder/artifact/models/llama3_8b/simple_add_test/model.onnx"
-    # run(path, arch, async_propagate=args.async_propagation, fake_quant=args.fake_quant, quant_config=quant_config, convert_int=args.convert_int)
-    # prebuilt_path = "/home/aiscuser/cy/Ladder/artifact/run_ladder/progress/e2e/ladder_llama3_async"
-    # run_from_prebuilt(prebuilt_path, arch)
-    # path = "/home/aiscuser/cy/Ladder/artifact/models/llama3_8b/llama3_8b_single_attention_seq1_bs1_kv8192/model.onnx"
-    # run(path, arch, async_propagate=args.async_propagation, fake_quant=args.fake_quant, quant_config=quant_config, convert_int=args.convert_int)
-    # path = "/home/aiscuser/cy/Ladder/artifact/models/llama3_8b/llama3_8b_layer1_seq1_bs1_kv64/model.onnx"
-    # run(path, arch, async_propagate=args.async_propagation, fake_quant=args.fake_quant, quant_config=quant_config, convert_int=args.convert_int)
+        run(path, arch, async_propagate=args.async_propagation, fake_quant=args.fake_quant, quant_config=quant_config, convert_int=args.convert_int)
+    os.system("rm -rf /tmp/tvmdbg_*")
