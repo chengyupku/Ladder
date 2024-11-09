@@ -56,13 +56,15 @@ config_llama3_70b = LlamaConfig(
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--config', type=str, default='8b')
+parser.add_argument("--batch_size", type=int, default=1)
 parser.add_argument("--seq_length_q", type=int, default=1)
 parser.add_argument("--seq_length_kv", type=int, default=8192)
-parser.add_argument("--batch_size", type=int, default=1)
+parser.add_argument("--is_decode", action="store_true")
 args = parser.parse_args()
 batch_size = args.batch_size
 seq_length_q = args.seq_length_q
 seq_length_kv = args.seq_length_kv
+is_decode = args.is_decode
 if (args.config == '8b'):
     config = config_llama3_8b
 elif (args.config == '70b'):
@@ -94,7 +96,10 @@ k = torch.ones(kv_shape, device="cuda", dtype=torch.float16)
 v = torch.ones(kv_shape, device="cuda", dtype=torch.float16)
 past_key_values = [[k, v]]
 
-input_args = (inputs_embeds, position_ids, position_embeddings, None, past_key_values, True)
+if is_decode:
+    input_args = (inputs_embeds, position_ids, position_embeddings, None, past_key_values, True)
+else:
+    input_args = (inputs_embeds, position_ids, position_embeddings)
 output = model(*input_args)
 
 # make a directory to save the model
