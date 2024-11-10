@@ -245,7 +245,7 @@ class Tunner(object):
                 cached.block_size, cached.grid_size, kernel_name, cached.args, cached.scheduled_mods)
             result.latency = cached.latency
             result.set_io_desc(input_desc, output_desc)
-            result.origin = cached
+            result.origin = result
             return result
 
         policy_list = self.get_policy_list()

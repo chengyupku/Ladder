@@ -12,5 +12,6 @@ models/*
 !models/llama_70b
 !models/llama3
 !models/mamba2
+!models/dit
 
 Figure4090

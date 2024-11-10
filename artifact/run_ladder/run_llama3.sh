@@ -32,6 +32,9 @@ mkdir -p logs/llama3
 # python -u ./ladder_llama3.py --cublas --async_propagation --batch 1 --seqlen_q 1 --seqlen_kv 8192 --single_attn --fake_quant -1 2>&1 | tee logs/llama3/llama3_70b_b1_s1_kv8192_q-1_single_attn.log
 
 # llama3_70b, batch 16, seqlen_q 1, seqlen_kv 8192
-python -u ./ladder_llama3.py --cublas --async_propagation --prefix llama3_70b --batch 16 --seqlen_q 1 --seqlen_kv 8192 --fake_quant -1 2>&1 | tee logs/llama3/llama3_70b_b16_s1_kv8192_q-1.log
+# python -u ./ladder_llama3.py --cublas --async_propagation --prefix llama3_70b --batch 16 --seqlen_q 1 --seqlen_kv 8192 --fake_quant -1 2>&1 | tee logs/llama3/llama3_70b_b16_s1_kv8192_q-1.log
 # python -u ./ladder_llama3.py --cublas --async_propagation --batch 16 --seqlen_q 1 --seqlen_kv 8192 --no_attn --fake_quant -1 2>&1 | tee logs/llama3/llama3_70b_b16_s1_kv8192_q-1_no_attn.log
 # python -u ./ladder_llama3.py --cublas --async_propagation --batch 16 --seqlen_q 1 --seqlen_kv 8192 --single_attn --fake_quant -1 2>&1 | tee logs/llama3/llama3_70b_b16_s1_kv8192_q-1_single_attn.log
+
+# llama3_8b, batch 1, seqlen_q 4096, seqlen_kv 4096, fp4
+python -u ./ladder_llama3.py  --cublas --async_propagation --prefix llama3_8b --batch 1 --seqlen_q 4096 --seqlen_kv 4096 --fake_quant 0 --bits 4 --format nf 2>&1 | tee logs/llama3/llama3_8b_b1_s4096_kv4096_fp4.log

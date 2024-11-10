@@ -71,11 +71,18 @@ def call_cuda_compile(output, objects, options=None, cc="nvcc"):
         if proc.returncode != 0:
             msg = proc.stdout.read().decode('utf-8')
             raise RuntimeError("Compilation error: " + msg)
-    subprocess.run(["nvcc", "--shared", *objects_to_link, "-o", output], check=True,
-                   stdout=subprocess.PIPE,  # Capture the stdout
-                   stderr=subprocess.PIPE,  # Capture the stderr
-                   text=True  # Make sure the captured output is in string format
-                )
+    try:
+        command = ["nvcc", "--shared", *objects_to_link, "-o", output]
+        print("Running command:", " ".join(command))
+        subprocess.run(command, check=True,
+                    stdout=subprocess.PIPE,  # Capture the stdout
+                    stderr=subprocess.PIPE,  # Capture the stderr
+                    text=True  # Make sure the captured output is in string format
+                    )
+    except subprocess.CalledProcessError as e:
+        print("Error occurred:")
+        print("Return code:", e.returncode)
+        print("Error output:", e.stderr)
     for obj in temp_objs:
         os.remove(obj)
 
