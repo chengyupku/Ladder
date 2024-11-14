@@ -60,6 +60,7 @@ parser.add_argument("--batch_size", type=int, default=1)
 parser.add_argument("--seq_length_q", type=int, default=1)
 parser.add_argument("--seq_length_kv", type=int, default=8192)
 parser.add_argument("--is_decode", action="store_true")
+parser.add_argument("--profile", action="store_true")
 args = parser.parse_args()
 batch_size = args.batch_size
 seq_length_q = args.seq_length_q
@@ -100,6 +101,29 @@ if is_decode:
     input_args = (inputs_embeds, position_ids, position_embeddings, None, past_key_values, True)
 else:
     input_args = (inputs_embeds, position_ids, position_embeddings)
+
+if args.profile:
+    def measure_time(model, input_args, num_warmup=10, num_runs=10):
+        for _ in range(num_warmup):
+            output = model(*input_args)
+        start_event = torch.cuda.Event(enable_timing=True)
+        end_event = torch.cuda.Event(enable_timing=True)
+
+        timings = []
+        for _ in range(num_runs):
+            start_event.record()
+            output = model(*input_args)
+            end_event.record()
+            torch.cuda.synchronize()
+            elapsed_time = start_event.elapsed_time(end_event)
+            timings.append(elapsed_time)
+        avg_time = sum(timings) / num_runs
+        return avg_time
+
+    model = torch.compile(model)
+    avg_time = measure_time(model, input_args)
+    print(f"Average execution time: {avg_time:.6f} ms")
+    exit()
 output = model(*input_args)
 
 # make a directory to save the model
