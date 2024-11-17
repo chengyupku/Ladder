@@ -10,6 +10,7 @@ parser.add_argument('--config', type=str, default='XL2')
 parser.add_argument("--n", type=int, default=16)
 parser.add_argument("--input_size", type=int, default=256)
 parser.add_argument("--num_classes", type=int, default=1000)
+parser.add_argument("--profile", action="store_true")
 args = parser.parse_args()
 n = args.n
 input_size = args.input_size // 8
@@ -44,11 +45,34 @@ t_embedder = TimestepEmbedder(hidden_size).half().cuda()
 x = torch.randn(n, 4, input_size, input_size, dtype=torch.float16, device="cuda")
 x = x_embedder(x)  # (N, T, D), where T = H * W / patch_size ** 2
 t = torch.randn(n, hidden_size, dtype=torch.float16, device="cuda")
+input_args = (x, t)
 
-# out = model(x, t)                      # (N, T, D)
+if args.profile:
+    def measure_time(model, input_args, num_warmup=10, num_runs=10):
+        for _ in range(num_warmup):
+            output = model(*input_args)
+        start_event = torch.cuda.Event(enable_timing=True)
+        end_event = torch.cuda.Event(enable_timing=True)
+
+        timings = []
+        for _ in range(num_runs):
+            start_event.record()
+            output = model(*input_args)
+            end_event.record()
+            torch.cuda.synchronize()
+            elapsed_time = start_event.elapsed_time(end_event)
+            timings.append(elapsed_time)
+        avg_time = sum(timings) / num_runs
+        return avg_time
+
+    # model = torch.compile(model)
+    avg_time = measure_time(model, input_args)
+    print(f"Average execution time: {avg_time:.6f} ms")
+    exit()
+output = model(*input_args)
 
 # make a directory to save the model
-dir_name = f"dit_{args.config}_layer1_n{n}_input{input_size}"
+dir_name = f"dit_{args.config}_layer1_n{args.n}_img{args.input_size}"
 if not os.path.exists(dir_name):
     os.makedirs(dir_name)
 
