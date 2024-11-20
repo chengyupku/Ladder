@@ -13,5 +13,7 @@ models/*
 !models/llama3
 !models/mamba2
 !models/dit
+!models/phimoe
+!models/retnet
 
 Figure4090
