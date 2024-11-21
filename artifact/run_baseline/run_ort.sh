@@ -20,3 +20,9 @@ python run_onnxrt.py --prefix ${MODEL_PREFIX}/dit_XL2_layer1_n16_img256
 python run_onnxrt.py --prefix ${MODEL_PREFIX}/dit_XL2_layer1_n16_img512
 python run_onnxrt.py --prefix ${MODEL_PREFIX}/dit_XL2_layer1_n64_img256
 python run_onnxrt.py --prefix ${MODEL_PREFIX}/dit_XL2_layer1_n64_img512
+
+MODEL_PREFIX="/home/aiscuser/cy/Ladder/artifact/models/phimoe"
+
+python run_onnxrt.py --prefix ${MODEL_PREFIX}/phimoe_3.5b_layer1_seq4096_bs1_kv4096
+python run_onnxrt.py --prefix ${MODEL_PREFIX}/phimoe_3.5b_layer1_seq1_bs1_kv8192
+python run_onnxrt.py --prefix ${MODEL_PREFIX}/phimoe_3.5b_layer1_seq1_bs16_kv8192
