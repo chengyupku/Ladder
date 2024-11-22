@@ -18,8 +18,8 @@
 
 
 MODEL_PATH=/home/aiscuser/cy/Ladder/artifact/models
-TRT_EXEC_PATH=$(pwd)/baseline_framework/TensorRT-9.0.1.4/bin
-# TRT_EXEC_PATH=$(pwd)/baseline_framework/TensorRT-10.1.0.27/bin
+# TRT_EXEC_PATH=$(pwd)/baseline_framework/TensorRT-9.0.1.4/bin
+TRT_EXEC_PATH=$(pwd)/baseline_framework/TensorRT-10.1.0.27/bin
 export LD_LIBRARY_PATH=$TRT_EXEC_PATH/../lib:$LD_LIBRARY_PATH
 echo "[TENSORRT] Using checkpoint path: $CHECKPOINT_PATH"
 LADDER_LOG_PATH="$CHECKPOINT_PATH/onnxruntime/logs"
@@ -42,3 +42,10 @@ $TRT_EXEC_PATH/trtexec --onnx=$MODEL_PATH/dit/dit_XL2_layer1_n64_img512/model.on
 $TRT_EXEC_PATH/trtexec --onnx=$MODEL_PATH/phimoe/phimoe_3.5b_layer1_seq4096_bs1_kv4096/model.onnx --saveEngine=$MODEL_PATH/phimoe/phimoe_3.5b_layer1_seq4096_bs1_kv4096/model.trt --fp16 --workspace=8192 | tee logs/phimoe-3.5b-layer1-seq4096-bs1-kv4096.log
 $TRT_EXEC_PATH/trtexec --onnx=$MODEL_PATH/phimoe/phimoe_3.5b_layer1_seq1_bs1_kv8192/model.onnx --saveEngine=$MODEL_PATH/phimoe/phimoe_3.5b_layer1_seq1_bs1_kv8192/model.trt --fp16 --workspace=8192 | tee logs/phimoe-3.5b-layer1-seq1-bs1-kv8192.log
 $TRT_EXEC_PATH/trtexec --onnx=$MODEL_PATH/phimoe/phimoe_3.5b_layer1_seq1_bs16_kv8192/model.onnx --saveEngine=$MODEL_PATH/phimoe/phimoe_3.5b_layer1_seq1_bs16_kv8192/model.trt --fp16 --workspace=8192 | tee logs/phimoe-3.5b-layer1-seq1-bs16-kv8192.log
+
+$TRT_EXEC_PATH/trtexec --onnx=$MODEL_PATH/retnet/retnet_3b_layer1_seq4096_bs1/model.onnx --saveEngine=$MODEL_PATH/retnet/retnet_3b_layer1_seq4096_bs1/model.trt --fp16 | tee logs/retnet-3b-layer1-seq4096-bs1.log
+$TRT_EXEC_PATH/trtexec --onnx=$MODEL_PATH/retnet/retnet_3b_layer1_seq1_bs1/model.onnx --saveEngine=$MODEL_PATH/retnet/retnet_3b_layer1_seq1_bs1/model.trt --fp16 | tee logs/retnet-3b-layer1-seq1-bs1.log
+$TRT_EXEC_PATH/trtexec --onnx=$MODEL_PATH/retnet/retnet_3b_layer1_seq1_bs16/model.onnx --saveEngine=$MODEL_PATH/retnet/retnet_3b_layer1_seq1_bs16/model.trt --fp16 | tee logs/retnet-3b-layer1-seq1-bs16.log
+$TRT_EXEC_PATH/trtexec --onnx=$MODEL_PATH/retnet/retnet_65b_layer1_seq4096_bs1/model.onnx --saveEngine=$MODEL_PATH/retnet/retnet_65b_layer1_seq4096_bs1/model.trt --fp16 | tee logs/retnet-65b-layer1-seq4096-bs1.log
+$TRT_EXEC_PATH/trtexec --onnx=$MODEL_PATH/retnet/retnet_65b_layer1_seq1_bs1/model.onnx --saveEngine=$MODEL_PATH/retnet/retnet_65b_layer1_seq1_bs1/model.trt --fp16 | tee logs/retnet-65b-layer1-seq1-bs1.log
+$TRT_EXEC_PATH/trtexec --onnx=$MODEL_PATH/retnet/retnet_65b_layer1_seq1_bs16/model.onnx --saveEngine=$MODEL_PATH/retnet/retnet_65b_layer1_seq1_bs16/model.trt --fp16 | tee logs/retnet-65b-layer1-seq1-bs16.log

@@ -12,6 +12,7 @@ from torchscale.architecture.config import RetNetConfig
 from torchscale.architecture.retnet import RetNetDecoder
 
 from argparse import Namespace
+from wrapper import RetnetWrapper
 
 def retnet_base_architecture(args):
     # backward compatibility for older model checkpoints
@@ -128,62 +129,80 @@ def retnet_65b(args):
     retnet_base_architecture(args)
 
 parser = argparse.ArgumentParser()
-# parser.add_argument('--config', type=str, default='1.3b')
-# parser.add_argument("--seq_length", type=int, default=512)
-# parser.add_argument("--batch_size", type=int, default=8)
-# parser.add_argument("--profile", action="store_true")
+parser.add_argument('--config', type=str, default='1.3b')
+parser.add_argument("--seq_length", type=int, default=512)
+parser.add_argument("--batch_size", type=int, default=8)
+parser.add_argument("--is_decode", action="store_true")
+parser.add_argument("--profile", action="store_true")
 args = parser.parse_args()
 
-retnet_3b(args)
-print("RetNet 3B args:", args)
+if args.config == "3b":
+    retnet_3b(args)
+elif args.config == "7b":
+    retnet_7b(args)
+elif args.config == "13b":
+    retnet_13b(args)
+elif args.config == "65b":
+    retnet_65b(args)
+else:
+    raise NotImplementedError
+
 config = RetNetConfig(**vars(args))
-model = RetNetDecoder(config).half().cuda().layers[0]
+model = RetNetDecoder(config).layers[0].half().cuda()
+# model = RetnetWrapper(args, model)
 model.eval()
 print(model)
-# batch_size = args.batch_size
-# seq_length = args.seq_length
 
-# if export_single_layer:
-#     input_ids = torch.ones(batch_size, seq_length, config.hidden_size, device="cuda", dtype=torch.float16)
-# else:
-#     input_ids = torch.ones(args.batch_size, args.seq_length, device="cuda", dtype=torch.int64)
-# out = model(input_ids)
-# # print(out)
-# if args.profile:
-#     def measure_time(model, input_args, num_warmup=10, num_runs=10):
-#         for _ in range(num_warmup):
-#             output = model(input_args)
-#         start_event = torch.cuda.Event(enable_timing=True)
-#         end_event = torch.cuda.Event(enable_timing=True)
+x = torch.ones(args.batch_size, args.seq_length, args.decoder_embed_dim, device="cuda", dtype=torch.float16)
+sin = cos = torch.ones(args.seq_length, args.decoder_embed_dim // args.decoder_retention_heads, device="cuda", dtype=torch.float16)
+mask = torch.ones(args.decoder_retention_heads, args.seq_length, args.seq_length, device="cuda", dtype=torch.float16)
+retention_rel_pos = ((sin, cos), mask)
 
-#         timings = []
-#         for _ in range(num_runs):
-#             start_event.record()
-#             output = model(input_args)
-#             end_event.record()
-#             torch.cuda.synchronize()
-#             elapsed_time = start_event.elapsed_time(end_event)
-#             timings.append(elapsed_time)
-#         avg_time = sum(timings) / num_runs
-#         return avg_time
+if args.is_decode:
+    incremental_state = {}
+    incremental_state["prev_key_value"] = torch.ones(
+        args.batch_size, args.decoder_retention_heads, args.decoder_value_embed_dim // args.decoder_retention_heads, 1, 
+        device="cuda", dtype=torch.float16)
+    incremental_state["scale"] = torch.ones(args.decoder_retention_heads, 1, 1, device="cuda", dtype=torch.float16)
+    input_args = (x, incremental_state, args.chunkwise_recurrent, retention_rel_pos)
+else:
+    input_args = (x, None, args.chunkwise_recurrent, retention_rel_pos)
 
-#     avg_time = measure_time(model, input_ids)
-#     print(f"Average execution time (no torch.compile): {avg_time:.6f} ms")
-#     model = torch.compile(model)
-#     avg_time = measure_time(model, input_ids)
-#     print(f"Average execution time (torch.compile): {avg_time:.6f} ms")
-#     exit()
+if args.profile:
+    def measure_time(model, input_args, num_warmup=10, num_runs=10):
+        for _ in range(num_warmup):
+            output = model(*input_args)
+        start_event = torch.cuda.Event(enable_timing=True)
+        end_event = torch.cuda.Event(enable_timing=True)
 
-# # make a directory to save the model
-# dir_name = f"mamba2_{args.config}_layer1_seq{seq_length}_bs{batch_size}"
-# if not os.path.exists(dir_name):
-#     os.makedirs(dir_name)
+        timings = []
+        for _ in range(num_runs):
+            start_event.record()
+            output = model(*input_args)
+            end_event.record()
+            torch.cuda.synchronize()
+            elapsed_time = start_event.elapsed_time(end_event)
+            timings.append(elapsed_time)
+        avg_time = sum(timings) / num_runs
+        return avg_time
 
-# # Save model into ONNX
-# torch.onnx.export(
-#     model,
-#     input_ids,
-#     f"{dir_name}/model.onnx",
-#     export_params=True,
-#     opset_version=14
-# )
+    avg_time = measure_time(model, input_args)
+    print(f"Average execution time (no torch.compile): {avg_time:.6f} ms")
+    model = torch.compile(model)
+    avg_time = measure_time(model, input_args)
+    print(f"Average execution time (torch.compile): {avg_time:.6f} ms")
+    exit()
+
+# make a directory to save the model
+dir_name = f"retnet_{args.config}_layer1_seq{args.seq_length}_bs{args.batch_size}"
+if not os.path.exists(dir_name):
+    os.makedirs(dir_name)
+
+# Save model into ONNX
+torch.onnx.export(
+    model,
+    input_args,
+    f"{dir_name}/model.onnx",
+    export_params=True,
+    opset_version=14
+)
