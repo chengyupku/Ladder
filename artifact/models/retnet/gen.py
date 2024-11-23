@@ -12,7 +12,6 @@ from torchscale.architecture.config import RetNetConfig
 from torchscale.architecture.retnet import RetNetDecoder
 
 from argparse import Namespace
-from wrapper import RetnetWrapper
 
 def retnet_base_architecture(args):
     # backward compatibility for older model checkpoints

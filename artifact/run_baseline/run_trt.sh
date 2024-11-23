@@ -49,3 +49,6 @@ $TRT_EXEC_PATH/trtexec --onnx=$MODEL_PATH/retnet/retnet_3b_layer1_seq1_bs16/mode
 $TRT_EXEC_PATH/trtexec --onnx=$MODEL_PATH/retnet/retnet_65b_layer1_seq4096_bs1/model.onnx --saveEngine=$MODEL_PATH/retnet/retnet_65b_layer1_seq4096_bs1/model.trt --fp16 | tee logs/retnet-65b-layer1-seq4096-bs1.log
 $TRT_EXEC_PATH/trtexec --onnx=$MODEL_PATH/retnet/retnet_65b_layer1_seq1_bs1/model.onnx --saveEngine=$MODEL_PATH/retnet/retnet_65b_layer1_seq1_bs1/model.trt --fp16 | tee logs/retnet-65b-layer1-seq1-bs1.log
 $TRT_EXEC_PATH/trtexec --onnx=$MODEL_PATH/retnet/retnet_65b_layer1_seq1_bs16/model.onnx --saveEngine=$MODEL_PATH/retnet/retnet_65b_layer1_seq1_bs16/model.trt --fp16 | tee logs/retnet-65b-layer1-seq1-bs16.log
+
+$TRT_EXEC_PATH/trtexec --onnx=$MODEL_PATH/resnet/resnet18_bs1/model.onnx --saveEngine=$MODEL_PATH/resnet/resnet18_bs1/model.trt --workspace=8192 --fp16 | tee logs/resnet18-bs1.log
+$TRT_EXEC_PATH/trtexec --onnx=$MODEL_PATH/resnet/resnet18_bs128/model.onnx --saveEngine=$MODEL_PATH/resnet/resnet18_bs128/model.trt --workspace=8192 --fp16 | tee logs/resnet18-bs128.log

@@ -39,3 +39,8 @@ python run_onnxrt.py --prefix ${MODEL_PREFIX}/retnet_3b_layer1_seq1_bs16
 python run_onnxrt.py --prefix ${MODEL_PREFIX}/retnet_65b_layer1_seq4096_bs1
 python run_onnxrt.py --prefix ${MODEL_PREFIX}/retnet_65b_layer1_seq1_bs1
 python run_onnxrt.py --prefix ${MODEL_PREFIX}/retnet_65b_layer1_seq1_bs16
+
+MODEL_PREFIX="/home/aiscuser/cy/Ladder/artifact/models/resnet"
+
+python run_onnxrt.py --prefix ${MODEL_PREFIX}/resnet18_bs1
+python run_onnxrt.py --prefix ${MODEL_PREFIX}/resnet18_bs128
