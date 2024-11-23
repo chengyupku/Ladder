@@ -15,5 +15,7 @@ models/*
 !models/dit
 !models/phimoe
 !models/retnet
+!models/resnet
+!models/unet
 
 Figure4090
