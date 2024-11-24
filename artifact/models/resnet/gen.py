@@ -10,7 +10,7 @@ parser.add_argument("--batch_size", type=int, default=8)
 parser.add_argument("--profile", action="store_true")
 args = parser.parse_args()
 
-model = models.resnet18(pretrained=True).half().cuda()
+model = models.resnet50(pretrained=True).half().cuda()
 model.eval()
 # print(model)
 
@@ -42,7 +42,7 @@ if args.profile:
     exit()
 
 # make a directory to save the model
-dir_name = f"resnet18_bs{args.batch_size}"
+dir_name = f"resnet50_bs{args.batch_size}"
 if not os.path.exists(dir_name):
     os.makedirs(dir_name)
 

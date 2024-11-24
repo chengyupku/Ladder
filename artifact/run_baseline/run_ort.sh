@@ -23,7 +23,9 @@ python run_onnxrt.py --prefix ${MODEL_PREFIX}/dit_XL2_layer1_n64_img512
 
 MODEL_PREFIX="/home/aiscuser/cy/Ladder/artifact/models/mamba2"
 
-python run_onnxrt.py --prefix ${MODEL_PREFIX}/mamba2_1.3b_layer1_seq1024_bs1
+python run_onnxrt.py --prefix ${MODEL_PREFIX}/mamba2_1.3b_layer1_seq1_bs1
+python run_onnxrt.py --prefix ${MODEL_PREFIX}/mamba2_1.3b_layer1_seq1_bs32
+python run_onnxrt.py --prefix ${MODEL_PREFIX}/mamba2_1.3b_layer1_seq1_bs128
 
 MODEL_PREFIX="/home/aiscuser/cy/Ladder/artifact/models/phimoe"
 
@@ -42,5 +44,5 @@ python run_onnxrt.py --prefix ${MODEL_PREFIX}/retnet_65b_layer1_seq1_bs16
 
 MODEL_PREFIX="/home/aiscuser/cy/Ladder/artifact/models/resnet"
 
-python run_onnxrt.py --prefix ${MODEL_PREFIX}/resnet18_bs1
-python run_onnxrt.py --prefix ${MODEL_PREFIX}/resnet18_bs128
+python run_onnxrt.py --prefix ${MODEL_PREFIX}/resnet50_bs1
+python run_onnxrt.py --prefix ${MODEL_PREFIX}/resnet50_bs128
