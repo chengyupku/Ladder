@@ -113,15 +113,9 @@ class LadderPerfectGemmTransform(relay.ExprMutator):
             out_dtype = call.checked_type.dtype
             # if the data's node has only one output, we can propagate the layout
             if M % warp_compute_tile_m != 0 or K % warp_compute_tile_n != 0 or N % warp_compute_tile_k != 0:
-                if M % warp_compute_tile_m != 0 or N % warp_compute_tile_n != 0:
-                    logger.debug("currently do not suppory m pad or n pad")
-                    return super().visit_call(call)
-                gemm = relay.Call(
-                    relay.op.get("ladder.C2DImplicitGemm"),
-                    [data, kernel],
-                    call.attrs,
-                )
-                return relay.reshape(gemm, out_shape)
+                logger.debug("currently do not suppory m pad or n pad")
+                return super().visit_call(call)
+    
 
             can_propagate = False
 

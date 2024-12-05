@@ -185,11 +185,12 @@ if args.profile:
         avg_time = sum(timings) / num_runs
         return avg_time
 
-    avg_time = measure_time(model, input_args)
-    print(f"Average execution time (no torch.compile): {avg_time:.6f} ms")
-    model = torch.compile(model)
-    avg_time = measure_time(model, input_args)
-    print(f"Average execution time (torch.compile): {avg_time:.6f} ms")
+    with torch.no_grad():
+        avg_time = measure_time(model, input_args)
+        print(f"Average execution time (no torch.compile): {avg_time:.6f} ms")
+        model = torch.compile(model)
+        avg_time = measure_time(model, input_args)
+        print(f"Average execution time (torch.compile): {avg_time:.6f} ms")
     exit()
 
 # make a directory to save the model
