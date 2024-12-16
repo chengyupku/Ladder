@@ -235,6 +235,10 @@ for M, N, K in shapes:
             best = cpresult
         print(latency)
     
+    # For motivation profiling
+    # torch.cuda.profiler.start()
+    # best.profile()
+    # torch.cuda.profiler.stop()
     with open("best_code.cu", "w+") as f:
         f.write(code)
     # print(best.code)

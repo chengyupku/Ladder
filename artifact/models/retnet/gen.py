@@ -206,3 +206,69 @@ torch.onnx.export(
     export_params=True,
     opset_version=14
 )
+
+# # Single parallel_forward
+# class SingleParallel(torch.nn.Module):
+#     def __init__(self, config):
+#         super(SingleParallel, self).__init__()
+#         self.num_heads = config.decoder_retention_heads
+#         self.head_dim = config.decoder_value_embed_dim // self.num_heads
+
+#     def forward(self, qr, kr, v, mask):
+#         bsz, tgt_len, embed_dim = v.size()
+
+#         vr = v.view(bsz, tgt_len, self.num_heads, self.head_dim).transpose(1, 2)
+
+#         qk_mat = qr @ kr.transpose(-1, -2) # bsz * m * tgt_len * tgt_len
+#         qk_mat = qk_mat * mask
+#         # invariant after normalization
+#         qk_mat = qk_mat / qk_mat.detach().abs().sum(dim=-1, keepdim=True).clamp(min=1, max=5e4)
+#         output = torch.matmul(qk_mat, vr)
+#         output = output.transpose(1, 2)
+#         return output
+
+# model = SingleParallel(config).half().cuda()
+# model.eval()
+# print(model)
+# qr = torch.ones(args.batch_size, config.decoder_retention_heads, args.seq_length, config.decoder_embed_dim // config.decoder_retention_heads, device="cuda", dtype=torch.float16)
+# kr = torch.ones(args.batch_size, config.decoder_retention_heads, args.seq_length, config.decoder_embed_dim // config.decoder_retention_heads, device="cuda", dtype=torch.float16)
+# v = torch.ones(args.batch_size, args.seq_length, args.decoder_value_embed_dim, device="cuda", dtype=torch.float16)
+# mask = torch.ones(args.batch_size, args.seq_length, args.seq_length, device="cuda", dtype=torch.float16)
+# input_args = (qr, kr, v, mask)
+
+# def measure_time(model, input_args, num_warmup=10, num_runs=10):
+#     for _ in range(num_warmup):
+#         output = model(*input_args)
+#     start_event = torch.cuda.Event(enable_timing=True)
+#     end_event = torch.cuda.Event(enable_timing=True)
+
+#     timings = []
+#     for _ in range(num_runs):
+#         start_event.record()
+#         output = model(*input_args)
+#         end_event.record()
+#         torch.cuda.synchronize()
+#         elapsed_time = start_event.elapsed_time(end_event)
+#         timings.append(elapsed_time)
+#     avg_time = sum(timings) / num_runs
+#     return avg_time
+
+# # with torch.no_grad():
+# #     avg_time = measure_time(model, input_args)
+# #     print(f"Average execution time (no torch.compile): {avg_time:.6f} ms")
+# #     model = torch.compile(model)
+# #     avg_time = measure_time(model, input_args)
+# #     print(f"Average execution time (torch.compile): {avg_time:.6f} ms")
+
+# dir_name = f"retnet_{args.config}_layer1_seq{args.seq_length}_bs{args.batch_size}_single_attn"
+# if not os.path.exists(dir_name):
+#     os.makedirs(dir_name)
+
+# # Save model into ONNX
+# torch.onnx.export(
+#     model,
+#     input_args,
+#     f"{dir_name}/model.onnx",
+#     export_params=True,
+#     opset_version=14
+# )
